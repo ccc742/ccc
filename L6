@@ -1,0 +1,82 @@
+
+import discord
+from discord import app_commands
+from discord.ext import commands
+import os
+import random
+
+TOKEN = "token"
+
+intents = discord.Intents.default()
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+
+class CevreBot(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @app_commands.command(name="basla", description="Atık azaltmaya başlamak için ilk adımları gösterir.")
+    async def basla(self, interaction: discord.Interaction):
+        mesaj = (
+            "**Atık azaltmaya başlamak için 3 kolay adım:**\n"
+            "1. Tek kullanımlık ürünleri azalt.\n"
+            "2. Su matarası ve bez çanta kullan.\n"
+            "3. Evde kağıt, plastik ve camı ayrı toplamaya başla."
+        )
+        await interaction.response.send_message(mesaj)
+
+    @app_commands.command(name="genc", description="Gençlere uygun çevre dostu öneriler verir.")
+    async def genc(self, interaction: discord.Interaction):
+        mesajlar = [
+            " Okula giderken matara kullan.",
+            " Alışverişte bez çanta taşı.",
+            " Defter yapraklarını boş bırakmamaya çalış.",
+            " Tek kullanımlık bardak yerine kendi bardağını kullan."
+        ]
+        await interaction.response.send_message(random.choice(mesajlar))
+
+    @app_commands.command(name="yetiskin", description="Yetişkinlere uygun atık azaltma önerileri verir.")
+    async def yetiskin(self, interaction: discord.Interaction):
+        mesajlar = [
+            " Markete çıkarken liste yap, gereksiz ambalajlı ürünleri azalt.",
+            " Artan yemekleri çöpe atmak yerine saklama kabında değerlendir.",
+            " Büyük boy ürün alarak plastik tüketimini azalt.",
+            " Dışarıda kahve alırken tekrar kullanılabilir bardak kullan."
+        ]
+        await interaction.response.send_message(random.choice(mesajlar))
+
+    @app_commands.command(name="ipuclari", description="Çevre dostu ipuçları verir.")
+    async def ipuclari(self, interaction: discord.Interaction):
+        ipuclari = [
+            " Kullanmadığın ışıkları kapat.",
+            " Duş süresini birkaç dakika kısalt.",
+            " Kargo kutularını tekrar kullan.",
+            " Mümkünse yerel ve mevsimlik ürünleri tercih et.",
+            " Kullanmadığın cihazların fişini çek."
+        ]
+        await interaction.response.send_message(random.choice(ipuclari))
+
+    @app_commands.command(name="meydanokuma", description="Günlük mini çevre görevi verir.")
+    async def meydanokuma(self, interaction: discord.Interaction):
+        gorevler = [
+            "Bugün 1 plastik poşet daha az kullan.",
+            "Bugün su şişesi satın alma, matarını kullan.",
+            "Bugün evde 3 atığı doğru şekilde ayır.",
+            "Bugün artan yemeği değerlendirmeye çalış.",
+            "Bugün gereksiz yanan bir lambayı kapat."
+        ]
+        await interaction.response.send_message(f" Günlük görev: **{random.choice(gorevler)}**")
+
+
+@bot.event
+async def on_ready():
+    await bot.add_cog(CevreBot(bot))
+    try:
+        synced = await bot.tree.sync()
+        print(f"{bot.user} olarak giriş yapıldı.")
+        print(f"{len(synced)} slash komutu senkronlandı.")
+    except Exception as e:
+        print("Komutlar senkronlanamadı:", e)
+
+
+bot.run(token)
